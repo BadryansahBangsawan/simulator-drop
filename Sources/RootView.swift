@@ -3,10 +3,9 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var state: AppState
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: FunTheme.sectionSpacing) {
             HStack {
                 Text("Simulator Drop")
                     .font(.headline)
@@ -23,6 +22,7 @@ struct RootView: View {
                 Label(err, systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.red)
                     .textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             if let status = state.statusText, !status.isEmpty {
                 Text(status)
@@ -31,10 +31,12 @@ struct RootView: View {
             }
 
             if state.showEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("No simulators. Install Xcode.")
-                    Button("Refresh") { state.refresh() }
-                }
+                ExtraEmptyState(
+                    title: "No simulators",
+                    detail: "Boot a simulator, or install Xcode so simctl is available.",
+                    actionTitle: "Refresh",
+                    action: { state.refresh() }
+                )
             } else if !state.devices.isEmpty {
                 Picker("Device", selection: Binding(
                     get: { state.selectedUDID },
@@ -46,7 +48,7 @@ struct RootView: View {
                 }
 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: FunTheme.innerSpacing) {
                         ForEach(state.devices) { device in
                             deviceRow(device)
                         }
@@ -55,45 +57,43 @@ struct RootView: View {
                 .frame(maxHeight: 180)
             }
 
-            Divider()
-
-            Text("Open URL on simulator")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            HStack {
-                TextField("https://…", text: $state.pasteURL)
-                    .textFieldStyle(.roundedBorder)
-                Button("Open") { state.openPastedURL() }
-                    .disabled(state.selectedUDID.isEmpty)
-            }
-
-            if !state.recentPaths.isEmpty {
-                Text("Recent drops")
+            VStack(alignment: .leading, spacing: FunTheme.innerSpacing) {
+                Text("Open URL on simulator")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                ForEach(state.recentPaths, id: \.self) { path in
-                    Button {
-                        state.replay(path: path)
-                    } label: {
-                        Text(URL(fileURLWithPath: path).lastPathComponent)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                    }
-                    .buttonStyle(.plain)
-                    .help(path)
+                HStack {
+                    TextField("https://…", text: $state.pasteURL)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Open") { state.openPastedURL() }
+                        .disabled(state.selectedUDID.isEmpty)
                 }
             }
 
-            HStack {
-                Button("Settings…") { openSettings() }
-                Spacer()
+            if !state.recentPaths.isEmpty {
+                VStack(alignment: .leading, spacing: FunTheme.innerSpacing) {
+                    Text("Recent drops")
+                        .font(.headline)
+                    ForEach(state.recentPaths, id: \.self) { path in
+                        Button {
+                            state.replay(path: path)
+                        } label: {
+                            Text(URL(fileURLWithPath: path).lastPathComponent)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
+                        .buttonStyle(.plain)
+                        .help(path)
+                        .extraRowSurface()
+                    }
+                }
             }
+
+            ExtraSettingsFooter()
         }
-        .funPanel()
-        .background(.regularMaterial)
         .animation(reduceMotion ? nil : FunTheme.spring, value: state.devices.count)
         .animation(reduceMotion ? nil : FunTheme.spring, value: state.errorText)
         .animation(reduceMotion ? nil : FunTheme.spring, value: state.isBusy)
+        .funPanel()
     }
 
     private func deviceLabel(_ device: SimDevice) -> String {
