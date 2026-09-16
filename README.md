@@ -1,39 +1,56 @@
+<div align="center">
+
 # Simulator Drop
 
-Push files and URLs onto a booted iOS Simulator from the menu bar.
+**Drag files and URLs onto the iOS Simulator — no Xcode required.**  
+macOS menu extra — lives in the menu bar, no Dock icon.
 
-Menu extra for macOS 14+. It lives in the menu bar and does not show a Dock icon.
+<br/>
 
-## Features
+[![Latest Release](https://img.shields.io/github/v/release/BadryansahBangsawan/simulator-drop?style=flat-square&color=76B900&label=latest)](https://github.com/BadryansahBangsawan/simulator-drop/releases/latest)
+[![macOS](https://img.shields.io/badge/macOS-14%2B-black?style=flat-square&logo=apple)](https://github.com/BadryansahBangsawan/simulator-drop/releases/latest)
+[![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?style=flat-square&logo=swift&logoColor=white)](https://swift.org)
 
-- Lists simulators via `xcrun simctl`.
-- Drop zone window for files.
-- Open a pasted URL on the selected simulator.
-- Recent drops.
-- Pin a device in Settings.
+<br/>
 
-## Requirements
+</div>
 
-- macOS 14 Sonoma or later
-- Swift 5.9 or later
-- `xcrun` and the `simctl` developer tool (Xcode or full Command Line Tools)
+---
 
-## Install
+## Download
 
-Homebrew (macOS 14+):
+| Platform | File |
+|---|---|
+| **macOS** (Apple Silicon & Intel, macOS 14+) | `SimulatorDrop-*-macos.zip` |
+
+[Go to Releases](https://github.com/BadryansahBangsawan/simulator-drop/releases/latest)
+
+---
+
+## Installation
+
+### Homebrew (recommended)
 
 ```bash
 brew tap BadryansahBangsawan/mac-menu-apps
 brew install --cask simulator-drop
 ```
 
-Opens as a menu extra (no Dock icon). The cask is ad-hoc signed. If Gatekeeper blocks it:
+A **Simulator Drop** icon appears in the menu bar. If Gatekeeper blocks it on first launch:
 
 ```bash
-xattr -cr /Applications/SimulatorDrop.app
+xattr -cr /Applications/SimulatorDrop.app && open /Applications/SimulatorDrop.app
 ```
 
-Build from source:
+Or: right-click the app, Open, then Open again. Still blocked? **System Settings → Privacy & Security → Open Anyway**.
+
+### GitHub Releases
+
+1. Download `SimulatorDrop-*-macos.zip` from [Releases](https://github.com/BadryansahBangsawan/simulator-drop/releases/latest)
+2. Unzip and drag **SimulatorDrop** into Applications
+3. On first launch, run the xattr command above if Gatekeeper blocks it
+
+### Build from source
 
 ```bash
 git clone https://github.com/BadryansahBangsawan/simulator-drop.git
@@ -42,39 +59,22 @@ bash package-app.sh
 open dist/SimulatorDrop.app
 ```
 
-Enable **Open at Login** from Settings if you want it after reboot.
+Requires Xcode Command Line Tools and Swift 5.9+.
 
-## Usage
+---
 
-- Pick a booted simulator, then **Drop zone** or paste a URL and **Open**.
-- If `simctl` is missing, the panel shows the `xcrun` stderr (for example `unable to find utility "simctl"`) instead of a fake empty-simulator state.
+## Notes
 
-## Permissions
+– Requires Xcode (provides the simctl command).
+– Supports multiple running simulators; pick the target from the menu.
+– Dragging a .app bundle installs the app directly.
+– No Dock icon; lives entirely in the menu bar.
 
-- No Screen Recording. Simulator control goes through `simctl`.
+---
 
-Denied permissions must not crash the app. You should see a banner and a button to open System Settings.
+<div align="center">
 
-## Privacy
+Made with ♥ for developers who prefer staying in the flow.
 
-No network except what you send into the simulator (opened URLs). Device pin is local UserDefaults.
+</div>
 
-Bundle ID: `engineer.badry.simulatordrop`.
-
-## Development
-
-```bash
-swift build
-swift build -c release --product SimulatorDrop
-```
-
-Layout: `Sources/` (SwiftPM executable), `Info.plist`, `Assets/AppIcon.icns`, `package-app.sh`.
-
-## Missing simctl
-
-This app does not install Xcode. On a machine with `xcrun` but no `simctl`, a red label is the expected result.
-
-
-## License
-
-[MIT](LICENSE)
