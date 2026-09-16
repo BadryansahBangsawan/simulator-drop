@@ -2,6 +2,8 @@
 
 Thanks for improving Simulator Drop.
 
+End users install with `brew tap BadryansahBangsawan/mac-menu-apps` and `brew install --cask simulator-drop`. This file is for source contributors.
+
 ## Build
 
 macOS 14 or later and Swift 5.9+ (Xcode or Command Line Tools):
