@@ -68,6 +68,7 @@ Requires Xcode Command Line Tools and Swift 5.9+.
 – Requires Xcode (provides the simctl command).
 – Supports multiple running simulators; pick the target from the menu.
 – Dragging a .app bundle installs the app directly.
+– Dropping a `.xcappdata` file imports container data into the running simulator.
 – No Dock icon; lives entirely in the menu bar.
 
 ---
